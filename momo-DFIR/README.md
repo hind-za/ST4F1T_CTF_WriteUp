@@ -140,7 +140,11 @@ QSSTV automatically detected the SSTV mode and decoded the image line by line â€
 <img width="1906" height="882" alt="image" src="https://github.com/user-attachments/assets/c0efc83c-3fa9-4402-9477-f5a30ffe348a" />
 
 ---
-
+## Flag 
+```bash
+ESECxGCD{aslan_had_challenge_easy}
+```
+---
 ## Tools Used
 
 | Tool | Purpose |
@@ -154,3 +158,5 @@ QSSTV automatically detected the SSTV mode and decoded the image line by line â€
 | `qsstv` | Decode SSTV signal to image |
 
 ---
+
+
