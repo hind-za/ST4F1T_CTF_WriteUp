@@ -1,6 +1,7 @@
 # CTF DFIR — momo Challenge Write-up
-
-## The Story
+Event: ST4F1T Category: DFIR
+---
+## Challenge Description
 
 A friend of **CR0M80** was chilling and listening to the radio station **ash.hadaFM** when suddenly he started hearing a really weird noise — something completely unrecognizable, not like regular music or speech. He had no idea what it was. The only clue CR0M80 could give him was a file called `momo.pdf`. Our job is to figure out what was going on and find the flag.
 
