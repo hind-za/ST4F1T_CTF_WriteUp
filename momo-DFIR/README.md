@@ -40,23 +40,10 @@ I used Python to extract the hidden WAV — it's much faster than using `dd` byt
 <img width="907" height="193" alt="image" src="https://github.com/user-attachments/assets/747cb90c-9d47-4253-ac7b-2a2e8455f78f" />
 
 
-Let's check what we got:
+Let's see what we got:
 
-```bash
-file hidden2.wav
-exiftool hidden2.wav
-```
+<img width="951" height="454" alt="image" src="https://github.com/user-attachments/assets/d86bee9f-0408-4449-97c3-8b8f5017ec29" />
 
-```
-hidden2.wav: RIFF (little-endian) data, WAVE audio, Microsoft PCM, 16 bit, stereo 48000 Hz
-
-File Size    : 52 MB
-Encoding     : Microsoft PCM
-Num Channels : 2
-Sample Rate  : 48000
-Duration     : 0:04:30
-Warning      : Error reading RIFF file (corrupted?)
-```
 
 We have a **4 minute 30 second audio file** — but the header is corrupted. Let's fix that.
 
@@ -66,9 +53,8 @@ We have a **4 minute 30 second audio file** — but the header is corrupted. Let
 
 The file has a broken RIFF header. FFmpeg can repair it by re-encoding with a clean header.
 
-```bash
-ffmpeg -i hidden2.wav -ar 48000 -ac 2 -acodec pcm_s16le fixed.wav
-```
+<img width="1852" height="584" alt="image" src="https://github.com/user-attachments/assets/b8368f36-eebf-43b6-9c90-8d6c746673bd" />
+
 
 After this, the file is clean and ready to analyze.
 
@@ -81,8 +67,8 @@ Instead of just listening, I generated a **spectrogram** — a visual representa
 ```bash
 sox fixed.wav -n spectrogram -o momo_spectrogram.png
 ```
+<img width="1070" height="709" alt="Screenshot 2026-03-08 064346" src="https://github.com/user-attachments/assets/ffcbd636-cd6e-4ebb-afd9-0ff9bb3961a7" />
 
-![Spectrogram](screenshots/momo_spectrogram.png)
 
 What I saw immediately:
 - A **bright yellow line constantly at around 2 kHz** — this is a synchronization tone
@@ -97,9 +83,8 @@ This is the signature of **SSTV — Slow Scan Television**. SSTV is an old radio
 
 SSTV decoders work best with **mono audio**. I converted the stereo file:
 
-```bash
-sox fixed.wav -r 48000 -c 1 -b 16 -e signed-integer -L for_qsstv.wav
-```
+<img width="894" height="77" alt="image" src="https://github.com/user-attachments/assets/42438234-340a-4fef-9509-214321bc509c" />
+
 
 The `dither clipped` warning is harmless, ignore it.
 
@@ -120,46 +105,10 @@ Inside QSSTV:
 
 QSSTV automatically detected the SSTV mode and decoded the image line by line — and there it was, the **flag revealed in the decoded image**.
 
-![Flag](screenshots/output_ctf.png)
+<img width="1906" height="882" alt="image" src="https://github.com/user-attachments/assets/c0efc83c-3fa9-4402-9477-f5a30ffe348a" />
 
 ---
 
-## The Full Attack Chain
-
-```
-momo.pdf
-   │
-   ▼  file → it's actually a WAV
-ctf_momo.wav
-   │
-   ▼  binwalk → second WAV hidden at offset 5853262
-hidden2.wav  (corrupted header)
-   │
-   ▼  ffmpeg → header repaired
-fixed.wav
-   │
-   ▼  sox spectrogram → confirmed SSTV signal at 2kHz
-   │
-   ▼  sox → converted to mono
-for_qsstv.wav
-   │
-   ▼  QSSTV → SSTV decoded
-FLAG 🎯
-```
-
----
-
-## What I Learned
-
-**File extension spoofing** — Never trust an extension. Always run `file` on anything suspicious. Attackers and CTF creators love hiding files this way.
-
-**Binwalk for hidden data** — When a file feels too big or suspicious, binwalk can reveal files embedded inside. It's one of the first tools to reach for in DFIR.
-
-**SSTV — Slow Scan Television** — An analog image transmission protocol that encodes pictures as audio tones between roughly 1200–2300 Hz. When you hear that weird noise on a radio frequency, there's a good chance it's SSTV carrying an image.
-
-**Spectrogram analysis** — Visualizing audio as a spectrogram is powerful. Hidden messages and encoded data often reveal themselves visually even when they sound like noise.
-
----
 
 ## Tools Used
 
@@ -175,4 +124,4 @@ FLAG 🎯
 
 ---
 
-*Challenge solved ✅ — ST4F1T*
+
